@@ -8,5 +8,6 @@ private:
 public:
 	Buffer();
 	~Buffer();
+	bool add_item(int key, value_type value);
 };
 

@@ -7,3 +7,7 @@
 #ifndef PAGE_SIZE
 #define PAGE_SIZE 8192 // 8 * 1024
 #endif
+
+#ifndef HASH_NUMBER
+#define HASH_NUMBER 100
+#endif

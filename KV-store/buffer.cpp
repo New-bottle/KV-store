@@ -12,3 +12,8 @@ Buffer<value_type, page_size>::~Buffer()
 {
 	delete p;
 }
+
+template<typename value_type, int page_size>
+bool Buffer<value_type, page_size>::add_item(int key, value_type value)
+{
+}

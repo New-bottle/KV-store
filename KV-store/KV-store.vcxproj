@@ -156,9 +156,11 @@
     <ClInclude Include="bloomfilter.h" />
     <ClInclude Include="buffer.h" />
     <ClInclude Include="cache.h" />
+    <ClInclude Include="diskmanager.h" />
     <ClInclude Include="filtercache.h" />
+    <ClInclude Include="hashfunction.h" />
     <ClInclude Include="loglist.h" />
-    <ClInclude Include="memory.h" />
+    <ClInclude Include="memorymanager.h" />
     <ClInclude Include="page.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="header.h" />
@@ -166,13 +168,15 @@
   <ItemGroup>
     <ClCompile Include="block.cpp" />
     <ClCompile Include="blockcache.cpp" />
-    <ClCompile Include="BloomFilter.cpp" />
+    <ClCompile Include="bloomfilter.cpp" />
     <ClCompile Include="buffer.cpp" />
     <ClCompile Include="cache.cpp" />
+    <ClCompile Include="diskmanager.cpp" />
     <ClCompile Include="filtercache.cpp" />
+    <ClCompile Include="hashfunction.cpp" />
     <ClCompile Include="KV-store.cpp" />
     <ClCompile Include="LogList.cpp" />
-    <ClCompile Include="memory.cpp" />
+    <ClCompile Include="memorymanager.cpp" />
     <ClCompile Include="page.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
