@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Test">
+      <UniqueIdentifier>{0656bd18-659d-447b-ab37-8595a7e29f85}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -22,9 +25,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="bloomfilter.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="block.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="page.h">
@@ -54,6 +54,15 @@
     <ClInclude Include="memorymanager.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="datablock.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="filterblock.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="file.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -65,13 +74,7 @@
     <ClCompile Include="buffer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="block.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="page.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="loglist.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="cache.cpp">
@@ -93,6 +96,21 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="bloomfilter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="loglist.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="datablock.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="filterblock.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test.cpp">
+      <Filter>Test</Filter>
+    </ClCompile>
+    <ClCompile Include="file.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

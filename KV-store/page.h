@@ -1,18 +1,27 @@
 #pragma once
 
-template<int page_size>
+#include <cstdio>
+
+struct PageHeader {
+	int kv_num;
+	int key_size;
+	int value_size;
+};
+
 class Page
 {
 private:
-	struct Header {
-		int kv_num;
-		int key_size;
-		int value_size;
-	} header;
-	char *p; // 指向实际存储数据的空间
+	PageHeader header;
+	FILE *fp; // 指向实际存储数据的空间
 
 public:
 	Page();
 	~Page();
+	PageHeader getheader();
 };
 
+/*
+ * Header
+ * key|key|key
+ * value|value|value
+ */
