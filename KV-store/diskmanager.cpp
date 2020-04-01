@@ -44,39 +44,40 @@ DiskManager::DiskManager()
 
 void DiskManager::create_block_file() // init the header
 {
+	printf("Creating block file\n");
 	FILE *block_fp = fopen(BLOCK_FILE_NAME, "wb+");
-	File *tmp = new File(block_fp, BLOCK_PAGE_SIZE);
-	node header = tmp->load(0);
+	File tmp(block_fp, BLOCK_PAGE_SIZE);
+	node& header = tmp.load(0);
 	int *hd = (int*)header.p;
 	hd[0] = BLOCK_PAGE_SIZE;
 	hd[1] = block_page_cnt = 0;
 	header.dirty_mark = true;
-	tmp->release(0);
-	tmp->flush(0);
-	delete tmp;
-	fclose(block_fp);
+	tmp.release(0);
+	tmp.flush(0);
 }
 
 void DiskManager::create_filter_file() // init the header
 {
+	printf("Creating filter file\n");
 	FILE *filter_fp = fopen(FILTER_FILE_NAME, "wb+");
-	File *tmp = new File(filter_fp, FILTER_PAGE_SIZE);
-	node header = tmp->load(0);
+	File tmp(filter_fp, FILTER_PAGE_SIZE);
+	node& header = tmp.load(0);
 	int *hd = (int*)header.p;
 	hd[0] = FILTER_PAGE_SIZE;
 	hd[1] = filter_page_cnt = 0;
+	for (int i = 0; i < HASH_NUMBER; ++i) {
+		hd[2 + i] = 0;
+	}
 	header.dirty_mark = true;
-	tmp->release(0);
-	tmp->flush(0);
-	delete tmp;
-	fclose(filter_fp);
+	tmp.release(0);
+	tmp.flush(0);
 }
 
 DiskManager::DiskManager()
 {
 	FILE *block_fp;
 	FILE *filter_fp;
-	if (!access(BLOCK_FILE_NAME, 0)) { // file not exist
+	if (_access(BLOCK_FILE_NAME, 0)) { // file not exist
 		create_block_file();
 	}
 	block_fp = fopen(BLOCK_FILE_NAME, "rb+");
@@ -89,7 +90,7 @@ DiskManager::DiskManager()
 	block_page_cnt = tmp[1];
 	block->release(0);
 
-	if (!access(FILTER_FILE_NAME, 0)) { // file not exist
+	if (_access(FILTER_FILE_NAME, 0)) { // file not exist
 		create_filter_file();
 	}
 	filter_fp = fopen(FILTER_FILE_NAME, "rb+");
@@ -106,8 +107,10 @@ DiskManager::DiskManager()
 
 DiskManager::~DiskManager()
 {
-	if (block != nullptr) delete block;
-	if (bloom_filter != nullptr) delete bloom_filter;
+	if (block != nullptr)
+		delete block;
+	if (bloom_filter != nullptr) 
+		delete bloom_filter;
 	// close files
 }
 
@@ -119,9 +122,12 @@ bool DiskManager::add_page(int hash_code, Buffer<value_type, page_size>& buffer)
 	 * then try to insert the page. If failed, create
 	 * a new block and insert from the head.
 	 */
-	int data[100]; // TODO: how big is enough?
 	node &header = bloom_filter->load(0); // page[0] is the header
 	int *head = ((int*)header.p) + 2; // head[i] = the first bloom_filter of hash_code=i
+	node &filter = bloom_filter->load(head[hash_code]);
+	
+	
+	//memcpy(new_filter.p, buffer.p, page_size);
 
 	//fseek(bloom_filter_fp, hash_code * sizeof(int) / 8, 0);
 	//fread(data, sizeof(int), 1, bloom_filter_fp); // data[0] = head[hash_code]

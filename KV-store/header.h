@@ -21,11 +21,11 @@
 #endif
 
 #ifndef BLOCK_FILE_NAME
-#define BLOCK_FILE_NAME ".\\block.dat"
+#define BLOCK_FILE_NAME "block.dat"
 #endif
 
 #ifndef FILTER_FILE_NAME
-#define FILTER_FILE_NAME ".\\filter.dat"
+#define FILTER_FILE_NAME "filter.dat"
 #endif
 
 #ifndef BLOCK_PAGE_SIZE

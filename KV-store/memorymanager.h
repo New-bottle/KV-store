@@ -8,8 +8,6 @@ class MemoryManager
 {
 private:
 	Buffer<value_type, page_size> *buffer;
-	FilterCache<> *filter_cache;
-	BlockCache<> *block_cache;
 public:
 	MemoryManager();
 	~MemoryManager();

@@ -9,7 +9,7 @@ struct node
 	int length;
 	int count;
 	bool dirty_mark;
-	node(void* p, int length, int count, bool dirty_mark) :
+	node(void* p=nullptr, int length=-1, int count=-1, bool dirty_mark=false) :
 		p(p), length(length), count(count), dirty_mark(dirty_mark) {}
 };
 

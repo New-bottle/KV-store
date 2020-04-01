@@ -2,16 +2,17 @@
 #include "buffer.h"
 #include "header.h"
 #include "bloomfilter.h"
-#include "datablock.h"
 #include "file.h"
 #include <cstdio>
 #include <io.h>
+#include <bitset>
 
 class DiskManager
 {
 private:
 	File *block;
 	File *bloom_filter;
+public:
 	int block_page_cnt;
 	int filter_page_cnt;
 	int block_page_size;
@@ -25,5 +26,5 @@ public:
 	~DiskManager();
 	template<typename value_type, int page_size>
 	bool add_page(int hash_code, Buffer<value_type, page_size>& buffer);
+	
 };
-

@@ -30,7 +30,11 @@
 *.exe
 *.out
 *.app
+KV-store/x64/*
 
 # Debug 
 KV-store/Debug/*
 KV-store/.vs/*
+
+# data
+*.dat

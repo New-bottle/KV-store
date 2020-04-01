@@ -4,15 +4,13 @@
 template<typename value_type, int page_size, int hash_number>
 MemoryManager<typename value_type, page_size, hash_number>::MemoryManager()
 {
-	buffer = filter_cache = block_cache = nullptr;
+	buffer = nullptr;
 }
 
 template<typename value_type, int page_size, int hash_number>
 MemoryManager<typename value_type, page_size, hash_number>::~MemoryManager()
 {
 	if (buffer != nullptr) delete buffer;
-	if (filter_cache != nullptr) delete filter_cache;
-	if (block_cache != nullptr) delete block_cache;
 }
 
 template<typename value_type, int page_size, int hash_number>
@@ -21,7 +19,7 @@ bool MemoryManager<typename value_type, page_size, hash_number>::init_buffer()
 	try {
 		buffer = new Buffer<value_type, page_size>[hash_number];
 	}
-	catch {
+	catch (...){
 		return false;
 	}
 	return true;
