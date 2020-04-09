@@ -1,23 +1,23 @@
 #include "pch.h"
 #include "MemoryManager.h"
 
-template<typename value_type, int page_size, int hash_number>
-MemoryManager<typename value_type, page_size, hash_number>::MemoryManager()
+template<typename value_type>
+MemoryManager<typename value_type>::MemoryManager()
 {
 	buffer = nullptr;
 }
 
-template<typename value_type, int page_size, int hash_number>
-MemoryManager<typename value_type, page_size, hash_number>::~MemoryManager()
+template<typename value_type>
+MemoryManager<typename value_type>::~MemoryManager()
 {
 	if (buffer != nullptr) delete buffer;
 }
 
-template<typename value_type, int page_size, int hash_number>
-bool MemoryManager<typename value_type, page_size, hash_number>::init_buffer()
+template<typename value_type>
+bool MemoryManager<typename value_type>::init_buffer()
 {
 	try {
-		buffer = new Buffer<value_type, page_size>[hash_number];
+		buffer = new Buffer<value_type>[HASH_NUMBER];
 	}
 	catch (...){
 		return false;
@@ -25,8 +25,8 @@ bool MemoryManager<typename value_type, page_size, hash_number>::init_buffer()
 	return true;
 }
 
-template<typename value_type, int page_size, int hash_number>
-bool MemoryManager<typename value_type, page_size, hash_number>::add_item(int key, value_type value)
+template<typename value_type>
+bool MemoryManager<typename value_type>::add_item(int key, value_type value)
 {
 	if (buffer == nullptr) {
 		init_buffer();
@@ -44,9 +44,24 @@ bool MemoryManager<typename value_type, page_size, hash_number>::add_item(int ke
 	}
 }
 
-template<typename value_type, int page_size, int hash_number>
-bool MemoryManager<typename value_type, page_size, hash_number>::flush_to_disk(const DiskManager& disk_manager, Buffer<value_type, page_size>& buffer, int hash_code) 
+template<typename value_type>
+void MemoryManager<value_type>::flush_to_disk(int hash_code, DiskManager& disk_manager)
+{
+	disk_manager.add_page(hash_code, buffer[hash_code]);
+}
+
+template<typename value_type>
+void MemoryManager<value_type>::flush_to_disk(DiskManager & disk_manager)
+{
+	for (int i = 0; i < HASH_NUMBER; ++i)
+		flush_to_disk(i, disk_manager);
+}
+
+/*
+template<typename value_type>
+bool MemoryManager<typename value_type>::flush_to_disk(const DiskManager& disk_manager, Buffer<value_type, page_size>& buffer, int hash_code) 
 {
 	disk_manager.add_page(hash_code, buffer);
 }
+*/
 

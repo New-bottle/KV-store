@@ -35,3 +35,7 @@
 #ifndef FILTER_PAGE_SIZE
 #define FILTER_PAGE_SIZE (8192)
 #endif
+
+#ifndef FILTER_TABLE_SIZE
+#define FILTER_TABLE_SIZE 
+#endif

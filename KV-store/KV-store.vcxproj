@@ -224,9 +224,9 @@
     <ClInclude Include="bloomfilter.h" />
     <ClInclude Include="buffer.h" />
     <ClInclude Include="cache.h" />
+    <ClInclude Include="datablock.h" />
     <ClInclude Include="diskmanager.h" />
     <ClInclude Include="file.h" />
-    <ClInclude Include="filterblock.h" />
     <ClInclude Include="filtercache.h" />
     <ClInclude Include="hashfunction.h" />
     <ClInclude Include="loglist.h" />
@@ -239,9 +239,9 @@
     <ClCompile Include="bloomfilter.cpp" />
     <ClCompile Include="buffer.cpp" />
     <ClCompile Include="cache.cpp" />
+    <ClCompile Include="datablock.cpp" />
     <ClCompile Include="diskmanager.cpp" />
     <ClCompile Include="file.cpp" />
-    <ClCompile Include="filterblock.cpp" />
     <ClCompile Include="filtercache.cpp" />
     <ClCompile Include="hashfunction.cpp" />
     <ClCompile Include="KV-store.cpp">

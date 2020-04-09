@@ -51,10 +51,10 @@
     <ClInclude Include="memorymanager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="filterblock.h">
+    <ClInclude Include="file.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="file.h">
+    <ClInclude Include="datablock.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -92,13 +92,13 @@
     <ClCompile Include="loglist.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="filterblock.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Test.cpp">
       <Filter>Test</Filter>
     </ClCompile>
     <ClCompile Include="file.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="datablock.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

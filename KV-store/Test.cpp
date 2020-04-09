@@ -2,6 +2,7 @@
 #include <boost/test/included/unit_test.hpp>
 #include "file.h"
 #include "diskmanager.h"
+#include "memorymanager.h"
 
 BOOST_AUTO_TEST_CASE(myTestCase)
 {
@@ -36,7 +37,30 @@ BOOST_AUTO_TEST_CASE(fileTestCase)
 BOOST_AUTO_TEST_CASE(diskManager)
 {
 	DiskManager disk;
-	BOOST_CHECK(disk.block_page_size == BLOCK_PAGE_SIZE);
-	BOOST_TEST(disk.block_page_cnt == 0);
+	BOOST_CHECK(*disk.block_page_size == BLOCK_PAGE_SIZE);
+	BOOST_TEST(*disk.block_page_cnt == 0);
 	//BOOST_REQUIRE(true);
+}
+
+BOOST_AUTO_TEST_CASE(read_write_10_int_data)
+{
+	DiskManager disk;
+	MemoryManager<int> mem;
+	mem.init_buffer();
+	for (int i = 0; i <= 10; ++i) {
+		mem.add_item(i, i * i - 2 * i + 1);
+	}
+	mem.flush_to_disk(disk);
+}
+
+BOOST_AUTO_TEST_CASE(read_write_100_int_data)
+{
+
+}
+
+BOOST_AUTO_TEST_CASE(read_write_long_long_data)
+{
+	DiskManager disk;
+	MemoryManager<long long> mem;
+
 }
