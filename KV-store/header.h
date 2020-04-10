@@ -35,7 +35,7 @@
 #endif
 
 #ifndef FILTER_PAGE_SIZE
-#define FILTER_PAGE_SIZE (16 * 1024)
+#define FILTER_PAGE_SIZE (1 * 1024)
 #endif
 
 #ifndef FILTER_TABLE_SIZE

@@ -157,6 +157,7 @@ void DiskManager::add_filter(int hash_code)
 	int next_filter = head[hash_code];
 	head[hash_code] = ++(*filter_page_cnt);
 	node &filter = bloom_filter->load(head[hash_code]);
+	filter.dirty_mark = true;
 	BloomFilter bf(filter.p);
 	*bf.next = next_filter;
 	*bf.block = ++(*block_page_cnt);
