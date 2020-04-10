@@ -40,9 +40,15 @@ public:
 	void clear();
 	void insert(const unsigned char* key_begin, const std::size_t& length);
 	template<typename T>
-	void insert(T key);
+	void insert(T key)
+	{
+		insert(reinterpret_cast<const unsigned char*>(&key), sizeof(T));
+	}
 	bool contains(const unsigned char* key_begin, const std::size_t length);
 	template<typename T>
-	bool contains(T key);
+	bool contains(T key)
+	{
+		return contains(reinterpret_cast<const unsigned char*>(&key), sizeof(T));
+	}
 };
 

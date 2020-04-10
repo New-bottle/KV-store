@@ -34,8 +34,3 @@ bool Buffer<value_type>::add_item(int key, value_type value)
 	return true;
 }
 
-template<typename value_type>
-void Buffer<value_type>::sort()
-{
-	// TODO
-}

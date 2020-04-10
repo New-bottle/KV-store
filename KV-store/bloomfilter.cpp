@@ -5,9 +5,9 @@
 BloomFilter::BloomFilter(void *p)
 {
 	next = (int*)p;
-	block = ((int*)p) + 1;
-	page_cnt = ((int*)p) + 2;
-	table = (char*)(((int*)p) + 3);
+	block = (int*)((char*)p + sizeof(int));
+	page_cnt = (int*)((char*)p + 2 * sizeof(int));
+	table = (char*)p + 3 * sizeof(int);
 }
 
 
@@ -27,11 +27,12 @@ void BloomFilter::insert(const unsigned char * key_begin, const std::size_t & le
 
 }
 
+/*
 template<typename T>
 void BloomFilter::insert(T key) // 这里插入的时候用的临时变量应该没问题吧
 {
 	insert(reinterpret_cast<const unsigned char*>(&key), sizeof(T));
-}
+}*/
 
 bool BloomFilter::contains(const unsigned char * key_begin, const std::size_t length)
 {
@@ -49,8 +50,9 @@ bool BloomFilter::contains(const unsigned char * key_begin, const std::size_t le
 	return true;
 }
 
+/*
 template<typename T>
 bool BloomFilter::contains(T key)
 {
 	return contains(reinterpret_cast<const unsigned char*>(&key), sizeof(T));
-}
+}*/

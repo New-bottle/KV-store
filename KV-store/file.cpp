@@ -8,6 +8,7 @@ node& File::load(int page_id)
 		it = sleep.find(page_id);
 		if (it == sleep.end()) {
 			char *tmp = new char[page_size];
+			memset(tmp, 0, sizeof(page_size));
 			long long target = (long long)page_id * page_size, now = 0;
 			fseek(fp, 0, SEEK_SET);
 			while (target - now >= 2LL * 1024 * 1024 * 1024) {
@@ -22,10 +23,13 @@ node& File::load(int page_id)
 		}
 		else {
 			it->second.count += 1;
-			//live[it->first] = it->second;
-			live.insert(std::pair<int,node>(it->first,it->second));
+			live[it->first] = it->second;
+			//live.insert(std::pair<int,node>(it->first,it->second));
 			sleep.erase(it);
 		}
+	}
+	else {
+		it->second.count += 1;
 	}
 	return live[page_id];
 }
@@ -33,6 +37,7 @@ node& File::load(int page_id)
 void File::release(int page_id)
 {
 	if (live.find(page_id) == live.end()) {
+		printf("page %d not found!", page_id);
 		throw "page not found";
 	}
 	live[page_id].count -= 1;
@@ -55,7 +60,7 @@ void File::flush(int page_id)
 			fseek(fp, target - now, SEEK_CUR);
 			fwrite(live[page_id].p, sizeof(char), page_size, fp);
 		}
-		delete live[page_id].p;
+		delete[] live[page_id].p;
 		live.erase(page_id);
 	}
 	else if (sleep.find(page_id) != sleep.end()) {
@@ -69,13 +74,16 @@ void File::flush(int page_id)
 			fseek(fp, target - now, SEEK_CUR);
 			fwrite(sleep[page_id].p, sizeof(char), page_size, fp);
 		}
-		delete sleep[page_id].p;
+		delete[] sleep[page_id].p;
 		sleep.erase(page_id);
 	}
 }
 
 bool File::flush()
 {
+#ifdef DEBUG
+	printf("flushing all cache\n");
+#endif
 	for (auto i = live.begin(); i != live.end(); ++i) {
 		if (i->second.dirty_mark) {
 			long long target = (long long)i->first * page_size, now = 0;
@@ -87,7 +95,7 @@ bool File::flush()
 			fseek(fp, target - now, 1);
 			fwrite(i->second.p, sizeof(char), page_size, fp);
 		}
-		delete i->second.p;
+		delete[] i->second.p;
 	}
 	live.clear();
 	for (auto i = sleep.begin(); i != sleep.end(); ++i) {
@@ -101,7 +109,7 @@ bool File::flush()
 			fseek(fp, target - now, 1);
 			fwrite(i->second.p, sizeof(char), page_size, fp);
 		}
-		delete i->second.p;
+		delete[] i->second.p;
 	}
 	sleep.clear();
 	return true;

@@ -2,19 +2,19 @@
 #include "MemoryManager.h"
 
 template<typename value_type>
-MemoryManager<typename value_type>::MemoryManager()
+MemoryManager<value_type>::MemoryManager()
 {
 	buffer = nullptr;
 }
 
 template<typename value_type>
-MemoryManager<typename value_type>::~MemoryManager()
+MemoryManager<value_type>::~MemoryManager()
 {
 	if (buffer != nullptr) delete buffer;
 }
 
 template<typename value_type>
-bool MemoryManager<typename value_type>::init_buffer()
+bool MemoryManager<value_type>::init_buffer()
 {
 	try {
 		buffer = new Buffer<value_type>[HASH_NUMBER];
@@ -26,7 +26,7 @@ bool MemoryManager<typename value_type>::init_buffer()
 }
 
 template<typename value_type>
-bool MemoryManager<typename value_type>::add_item(int key, value_type value)
+bool MemoryManager<value_type>::add_item(int key, value_type value)
 {
 	if (buffer == nullptr) {
 		init_buffer();

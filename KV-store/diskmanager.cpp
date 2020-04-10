@@ -50,7 +50,7 @@ void DiskManager::create_block_file() // init the header
 	node& header = tmp.load(0);
 	int *hd = (int*)header.p;
 	hd[0] = BLOCK_PAGE_SIZE;
-	hd[1] = *block_page_cnt = 0;
+	hd[1] = 0;
 	header.dirty_mark = true;
 	tmp.release(0);
 	tmp.flush(0);
@@ -64,7 +64,7 @@ void DiskManager::create_filter_file() // init the header
 	node& header = tmp.load(0);
 	int *hd = (int*)header.p;
 	hd[0] = FILTER_PAGE_SIZE;
-	hd[1] = *filter_page_cnt = 0;
+	hd[1] = 0;
 	for (int i = 0; i < HASH_NUMBER; ++i) {
 		hd[2 + i] = 0;
 	}
@@ -88,7 +88,7 @@ DiskManager::DiskManager()
 	// tmp[1] = block_page_cnt
 	block_page_size = tmp;
 	block_page_cnt = tmp + 1;
-	block->release(0);
+	//block->release(0); // 不能release，block_page_size/cnt这两个指针还需要使用这里的数据，析构时再release
 
 	if (_access(FILTER_FILE_NAME, 0)) { // file not exist
 		create_filter_file();
@@ -101,19 +101,24 @@ DiskManager::DiskManager()
 	// tmp[1] = filter_page_cnt
 	filter_page_size = tmp;
 	filter_page_cnt = tmp + 1;
-	bloom_filter->release(0);
+	//bloom_filter->release(0);
 	// open files
 }
 
 DiskManager::~DiskManager()
 {
-	if (block != nullptr)
+	if (block != nullptr) {
+		//block->release(0);
 		delete block;
-	if (bloom_filter != nullptr) 
+	}
+	if (bloom_filter != nullptr) {
+		//bloom_filter->release(0);
 		delete bloom_filter;
+	}
 	// close files
 }
 
+/*
 template<typename value_type>
 void DiskManager::add_page(int hash_code, Buffer<value_type>& buffer)
 {
@@ -121,7 +126,7 @@ void DiskManager::add_page(int hash_code, Buffer<value_type>& buffer)
 	 * First find the first block of the hash_code,
 	 * then try to insert the page. If failed, create
 	 * a new block and insert from the head.
-	 */
+	 *
 	node &header = bloom_filter->load(0); // page[0] is the header
 	int *head = ((int*)header.p) + 2; // head[i] = the first bloom_filter of hash_code=i
 	bool flag = false;
@@ -141,6 +146,7 @@ void DiskManager::add_page(int hash_code, Buffer<value_type>& buffer)
 	memcpy(data_block[*bf.page_cnt], buffer.p, PAGE_SIZE);
 	++bf.page_cnt;
 }
+*/
 
 
 void DiskManager::add_filter(int hash_code)
@@ -155,6 +161,8 @@ void DiskManager::add_filter(int hash_code)
 	*bf.next = next_filter;
 	*bf.block = ++(*block_page_cnt);
 	*bf.page_cnt = 0;
+	bloom_filter->release(head[hash_code]);
+	bloom_filter->release(0);
 }
 
 bool DiskManager::filter_full(int filter_num)
@@ -162,7 +170,9 @@ bool DiskManager::filter_full(int filter_num)
 	if (filter_num > *filter_page_cnt) throw "Filter num exceed";
 	node &filter = bloom_filter->load(filter_num);
 	BloomFilter bf(filter.p);
-	return *bf.page_cnt == BLOCK_PAGE_SIZE / PAGE_SIZE;
+	bool sign = *bf.page_cnt == BLOCK_PAGE_SIZE / PAGE_SIZE;
+	bloom_filter->release(filter_num);
+	return sign;
 }
 
 BloomFilter DiskManager::load_filter(int filter_num)
@@ -194,8 +204,7 @@ DataBlock DiskManager::load_block(const BloomFilter& cur_filter)
 	return load_block(*cur_filter.block);
 }
 
-template<typename value_type>
-value_type DiskManager::search(int key)
+void* DiskManager::search(int key)
 {
 	int hash_code = HashFunction::hash1(key);
 	BloomFilter filter = load_first_filter(hash_code);
@@ -203,14 +212,14 @@ value_type DiskManager::search(int key)
 		if (filter.contains(key)) {
 			DataBlock data_block = load_block(filter);
 			for (int i = 0; i < BLOCK_PAGE_SIZE / PAGE_SIZE; ++i) {
-				int *cnt = data_block[i], *head = data_block[i] + sizeof(int);
-				value_type *value = nullptr;
-				for (int j = 0; j < cnt; ++j) {
+				int *cnt = (int*)data_block[i], *head = (int*)(data_block[i] + sizeof(int));
+				void *value = nullptr;
+				for (int j = 0; j < *cnt; ++j) {
 					// head[j << 1]     -> key
 					// head[j << 1 | 1] -> pos of value
 					if (head[j << 1] == key) {
 						value = data_block[i] + head[j << 1 | 1];
-						return *value;
+						return value;
 					}
 				}
 			}

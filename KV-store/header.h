@@ -1,15 +1,17 @@
 #pragma once
 
+#define DEBUG
+
 #ifndef BLOCK_SIZE
-#define BLOCK_SIZE 524288 // 512 * 1024
+#define BLOCK_SIZE (512 * 1024)
 #endif
 
 #ifndef PAGE_SIZE
-#define PAGE_SIZE 8192 // 8 * 1024
+#define PAGE_SIZE 64 // 8 * 1024
 #endif
 
 #ifndef HASH_NUMBER
-#define HASH_NUMBER 100
+#define HASH_NUMBER 10
 #endif
 
 #ifndef TABLE_SIZE
@@ -29,11 +31,11 @@
 #endif
 
 #ifndef BLOCK_PAGE_SIZE
-#define BLOCK_PAGE_SIZE (512*1024)
+#define BLOCK_PAGE_SIZE (128)
 #endif
 
 #ifndef FILTER_PAGE_SIZE
-#define FILTER_PAGE_SIZE (8192)
+#define FILTER_PAGE_SIZE (16 * 1024)
 #endif
 
 #ifndef FILTER_TABLE_SIZE

@@ -220,14 +220,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="blockcache.h" />
     <ClInclude Include="bloomfilter.h" />
     <ClInclude Include="buffer.h" />
-    <ClInclude Include="cache.h" />
     <ClInclude Include="datablock.h" />
     <ClInclude Include="diskmanager.h" />
     <ClInclude Include="file.h" />
-    <ClInclude Include="filtercache.h" />
     <ClInclude Include="hashfunction.h" />
     <ClInclude Include="loglist.h" />
     <ClInclude Include="memorymanager.h" />
@@ -235,20 +232,21 @@
     <ClInclude Include="header.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="blockcache.cpp" />
     <ClCompile Include="bloomfilter.cpp" />
-    <ClCompile Include="buffer.cpp" />
-    <ClCompile Include="cache.cpp" />
+    <ClCompile Include="buffer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Test|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="datablock.cpp" />
     <ClCompile Include="diskmanager.cpp" />
     <ClCompile Include="file.cpp" />
-    <ClCompile Include="filtercache.cpp" />
     <ClCompile Include="hashfunction.cpp" />
     <ClCompile Include="KV-store.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Test|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="loglist.cpp" />
-    <ClCompile Include="memorymanager.cpp" />
+    <ClCompile Include="memorymanager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Test|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Test|Win32'">Create</PrecompiledHeader>
@@ -262,7 +260,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="block.dat" />
     <None Include="filetest.dat" />
+    <None Include="filter.dat" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

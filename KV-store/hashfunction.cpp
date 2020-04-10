@@ -182,3 +182,5 @@ unsigned int HashFunction::hash_ap(const unsigned char* begin, std::size_t remai
 
 	return hash;
 }
+
+HashFunction hash_functions;
