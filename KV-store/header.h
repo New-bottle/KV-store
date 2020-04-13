@@ -7,11 +7,12 @@
 #endif
 
 #ifndef PAGE_SIZE
-#define PAGE_SIZE 64 // 8 * 1024
+//#define PAGE_SIZE (8 * 1024) // 8 * 1024
+#define PAGE_SIZE 512
 #endif
 
 #ifndef HASH_NUMBER
-#define HASH_NUMBER 10
+#define HASH_NUMBER 100
 #endif
 
 #ifndef TABLE_SIZE
@@ -31,13 +32,13 @@
 #endif
 
 #ifndef BLOCK_PAGE_SIZE
-#define BLOCK_PAGE_SIZE (128)
+//#define BLOCK_PAGE_SIZE (512 * 1024)
+#define BLOCK_PAGE_SIZE (16 * 1024)
 #endif
 
 #ifndef FILTER_PAGE_SIZE
-#define FILTER_PAGE_SIZE (1 * 1024)
+//#define FILTER_PAGE_SIZE (16 * 1024)
+#define FILTER_PAGE_SIZE (1 * 1024) // 1000 int
+// (hash_number + 2) * 4 <= filter_page_size
 #endif
 
-#ifndef FILTER_TABLE_SIZE
-#define FILTER_TABLE_SIZE 
-#endif

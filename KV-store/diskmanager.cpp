@@ -67,6 +67,8 @@ void DiskManager::create_filter_file() // init the header
 	hd[1] = 0;
 	for (int i = 0; i < HASH_NUMBER; ++i) {
 		hd[2 + i] = 0;
+		// 这里要小心，HASH_NUMBER过大的时候会超过第0个page所能存储的范围，会需要
+		// 扩大FILTER_PAGE_SIZE，这不是一个好的设计，最好能单独设置header的size
 	}
 	header.dirty_mark = true;
 	tmp.release(0);

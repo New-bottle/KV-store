@@ -47,23 +47,34 @@ BOOST_AUTO_TEST_CASE(read_write_10_int_data)
 	DiskManager disk;
 	MemoryManager<int> mem(disk);
 	mem.init_buffer();
-	for (int i = 0; i <= 10; ++i) {
-		printf("adding item (%d, %d)\n", i, 'a' + i);
-		mem.add_item(i, 'a' + i);
+	for (int i = 1; i <= 10; ++i) {
+		printf("adding item (%d, %d)\n", i, i * i + 2 * i - 1);
+		mem.add_item(i, i * i + 2 * i - 1);
 	}
 	mem.flush_to_disk();
 	BOOST_TEST(true);
-	for (int i = 0; i <= 10; ++i) {
+	for (int i = 1; i <= 10; ++i) {
 		int *ans = (int*)disk.search(i);
-		BOOST_TEST(*ans == 'a' + i);
+		BOOST_TEST(*ans == i * i + 2 * i - 1);
 	}
 }
 
-BOOST_AUTO_TEST_CASE(read_write_100_int_data)
+BOOST_AUTO_TEST_CASE(read_write_1000_int_data)
 {
+	DiskManager disk;
+	MemoryManager<int> mem(disk);
+	mem.init_buffer();
+	for (int i = 0; i <= 1000; ++i) {
+		printf("adding item (%d, %d)\n", i, i * i + 2 * i - 1);
+		mem.add_item(i, i * i + 2 * i - 1);
+	}
+	mem.flush_to_disk();
 	BOOST_TEST(true);
+	for (int i = 0; i <= 1000; ++i) {
+		int *ans = (int*)disk.search(i);
+		BOOST_TEST(*ans == i * i + 2 * i - 1);
+	}
 }
-
 BOOST_AUTO_TEST_CASE(read_write_long_long_data)
 {
 	DiskManager disk;
