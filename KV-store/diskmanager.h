@@ -14,13 +14,17 @@ private:
 	File *block;
 	File *bloom_filter;
 public:
-	int *block_page_cnt;
-	int *filter_page_cnt;
-	int *block_page_size;
-	int *filter_page_size;
+	unsigned int *block_page_cnt;
+	unsigned int *filter_page_cnt;
+	unsigned int *block_page_size;
+	unsigned int *filter_page_size;
 
 	void create_block_file();
 	void create_filter_file();
+#ifdef DEBUG
+	unsigned int filter_cnt;
+	unsigned int block_cnt;
+#endif
 
 private:
 	void add_filter(int hash_code);

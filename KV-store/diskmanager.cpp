@@ -48,7 +48,7 @@ void DiskManager::create_block_file() // init the header
 	FILE *block_fp = fopen(BLOCK_FILE_NAME, "wb+");
 	File tmp(block_fp, BLOCK_PAGE_SIZE);
 	node& header = tmp.load(0);
-	int *hd = (int*)header.p;
+	unsigned int *hd = (unsigned int*)header.p;
 	hd[0] = BLOCK_PAGE_SIZE;
 	hd[1] = 0;
 	header.dirty_mark = true;
@@ -62,7 +62,7 @@ void DiskManager::create_filter_file() // init the header
 	FILE *filter_fp = fopen(FILTER_FILE_NAME, "wb+");
 	File tmp(filter_fp, FILTER_PAGE_SIZE);
 	node& header = tmp.load(0);
-	int *hd = (int*)header.p;
+	unsigned int *hd = (unsigned int*)header.p;
 	hd[0] = FILTER_PAGE_SIZE;
 	hd[1] = 0;
 	for (int i = 0; i < HASH_NUMBER; ++i) {
@@ -77,6 +77,9 @@ void DiskManager::create_filter_file() // init the header
 
 DiskManager::DiskManager()
 {
+#ifdef DEBUG
+	filter_cnt = block_cnt = 0;
+#endif
 	FILE *block_fp;
 	FILE *filter_fp;
 	if (_access(BLOCK_FILE_NAME, 0)) { // file not exist
@@ -85,7 +88,8 @@ DiskManager::DiskManager()
 	block_fp = fopen(BLOCK_FILE_NAME, "rb+");
 	block = new File(block_fp, BLOCK_PAGE_SIZE);
 	node &header = block->load(0);
-	int *tmp = (int*)header.p; 
+	header.dirty_mark = true;
+	unsigned int *tmp = (unsigned int*)header.p; 
 	// tmp[0] = block_page_size
 	// tmp[1] = block_page_cnt
 	block_page_size = tmp;
@@ -98,7 +102,8 @@ DiskManager::DiskManager()
 	filter_fp = fopen(FILTER_FILE_NAME, "rb+");
 	bloom_filter = new File(filter_fp, FILTER_PAGE_SIZE);
 	node &header2 = bloom_filter->load(0);
-	tmp = (int*) header2.p;
+	header2.dirty_mark = true;
+	tmp = (unsigned int*) header2.p;
 	// tmp[0] = filter_page_size
 	// tmp[1] = filter_page_cnt
 	filter_page_size = tmp;
@@ -180,12 +185,18 @@ bool DiskManager::filter_full(int filter_num)
 
 BloomFilter DiskManager::load_filter(int filter_num)
 {
+#ifdef DEBUG
+	++filter_cnt;
+#endif
 	node &filter = bloom_filter->load(filter_num);
 	return BloomFilter(filter.p);
 }
 
 DataBlock DiskManager::load_block(int block_num)
 {
+#ifdef DEBUG
+	++block_cnt;
+#endif
 	node &data_block = block->load(block_num);
 	return DataBlock(data_block.p);
 }

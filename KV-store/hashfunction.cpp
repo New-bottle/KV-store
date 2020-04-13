@@ -106,7 +106,7 @@ HashFunction::~HashFunction()
  * 10034601 -> 0346
  * 12345678 -> 3456
  */
-int HashFunction::hash1(int key)
+int HashFunction::hash2(int key)
 {
 	return key / 100 % 10000;
 }
@@ -117,7 +117,7 @@ int HashFunction::hash1(int key)
  * 10034601 -> 46
  * 12345678 -> 56
  */
-int HashFunction::hash2(int key)
+int HashFunction::hash1(int key)
 {
 	return key / 100 % 100;
 }

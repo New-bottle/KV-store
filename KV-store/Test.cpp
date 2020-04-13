@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE(read_write_10_int_data)
 	MemoryManager<int> mem(disk);
 	mem.init_buffer();
 	for (int i = 1; i <= 10; ++i) {
-		printf("adding item (%d, %d)\n", i, i * i + 2 * i - 1);
+		//printf("adding item (%d, %d)\n", i, i * i + 2 * i - 1);
 		mem.add_item(i, i * i + 2 * i - 1);
 	}
 	mem.flush_to_disk();
@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE(read_write_1000_int_data)
 	MemoryManager<int> mem(disk);
 	mem.init_buffer();
 	for (int i = 0; i <= 1000; ++i) {
-		printf("adding item (%d, %d)\n", i, i * i + 2 * i - 1);
+		//printf("adding item (%d, %d)\n", i, i * i + 2 * i - 1);
 		mem.add_item(i, i * i + 2 * i - 1);
 	}
 	mem.flush_to_disk();
@@ -74,11 +74,112 @@ BOOST_AUTO_TEST_CASE(read_write_1000_int_data)
 		int *ans = (int*)disk.search(i);
 		BOOST_TEST(*ans == i * i + 2 * i - 1);
 	}
+#ifdef DEBUG
+	printf("filter_cnt: %d   block_cnt: %d\n", disk.filter_cnt, disk.block_cnt);
+#endif
 }
-BOOST_AUTO_TEST_CASE(read_write_long_long_data)
+
+BOOST_AUTO_TEST_CASE(read_write_100000_int_data)
+{
+	DiskManager disk;
+	MemoryManager<int> mem(disk);
+	mem.init_buffer();
+	for (int i = 0; i <= 100000; ++i) {
+		//printf("adding item (%d, %d)\n", i, i * i + 2 * i - 1);
+		mem.add_item(i, i * i + 2 * i - 1);
+	}
+	mem.flush_to_disk();
+	BOOST_TEST(true);
+	for (int i = 0; i <= 100000; ++i) {
+		int *ans = (int*)disk.search(i);
+		BOOST_TEST(*ans == i * i + 2 * i - 1);
+	}
+#ifdef DEBUG
+	printf("filter_cnt: %d   block_cnt: %d\n", disk.filter_cnt, disk.block_cnt);
+#endif
+}
+
+BOOST_AUTO_TEST_CASE(read_100000_int_data)
+{
+	DiskManager disk;
+	BOOST_TEST(true);
+	for (int i = 0; i <= 100000; ++i) {
+		int *ans = (int*)disk.search(i);
+		BOOST_TEST(*ans == i * i + 2 * i - 1);
+	}
+#ifdef DEBUG
+	printf("filter_cnt: %d   block_cnt: %d\n", disk.filter_cnt, disk.block_cnt);
+#endif
+}
+
+BOOST_AUTO_TEST_CASE(read_write_100000_long_long_data)
 {
 	DiskManager disk;
 	MemoryManager<long long> mem(disk);
-
+	mem.init_buffer();
+	for (long long i = 0; i <= 100000; ++i) {
+		mem.add_item(i, i * i + 2 * i - 1);
+	}
+	mem.flush_to_disk();
 	BOOST_TEST(true);
+	for (long long i = 0; i <= 100000; ++i) {
+		long long *ans = (long long*)disk.search(i);
+		BOOST_TEST(*ans == i * i + 2 * i - 1);
+	}
+	BOOST_TEST(true);
+#ifdef DEBUG
+	printf("filter_cnt: %d   block_cnt: %d\n", disk.filter_cnt, disk.block_cnt);
+#endif
+}
+
+BOOST_AUTO_TEST_CASE(read_write_200000_long_long_data)
+{
+	DiskManager disk;
+	MemoryManager<long long> mem(disk);
+	mem.init_buffer();
+	for (long long i = 0; i <= 200000; ++i) {
+		mem.add_item(i, i * i + 2 * i - 1);
+	}
+	mem.flush_to_disk();
+	BOOST_TEST(true);
+	for (long long i = 0; i <= 200000; ++i) {
+		long long *ans = (long long*)disk.search(i);
+		BOOST_TEST(*ans == i * i + 2 * i - 1);
+	}
+	BOOST_TEST(true);
+#ifdef DEBUG
+	printf("filter_cnt: %d   block_cnt: %d\n", disk.filter_cnt, disk.block_cnt);
+#endif
+}
+
+BOOST_AUTO_TEST_CASE(read_write_1000000_long_long_data)
+{
+	DiskManager disk;
+	MemoryManager<long long> mem(disk);
+	mem.init_buffer();
+	for (long long i = 0; i <= 1000000; ++i) {
+		mem.add_item(i, i * i + 2 * i - 1);
+	}
+	mem.flush_to_disk();
+	BOOST_TEST(true);
+	for (long long i = 0; i <= 1000000; ++i) {
+		long long *ans = (long long*)disk.search(i);
+		BOOST_TEST(*ans == i * i + 2 * i - 1);
+	}
+	BOOST_TEST(true);
+#ifdef DEBUG
+	printf("filter_cnt: %d   block_cnt: %d\n", disk.filter_cnt, disk.block_cnt);
+#endif
+}
+
+BOOST_AUTO_TEST_CASE(read_1000000_long_long_data)
+{
+	DiskManager disk;
+	for (long long i = 0; i <= 1000000; ++i) {
+		long long *ans = (long long*)disk.search(i);
+		BOOST_TEST(*ans == i * i + 2 * i - 1);
+	}
+#ifdef DEBUG
+	printf("filter_cnt: %d   block_cnt: %d\n", disk.filter_cnt, disk.block_cnt);
+#endif
 }

@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KV-store", "KV-store.vcxproj", "{C647C7EC-D6E7-4122-BDE6-4CBA3451083F}"
 EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Test|x64 = Debug Test|x64
 		Debug Test|x86 = Debug Test|x86
