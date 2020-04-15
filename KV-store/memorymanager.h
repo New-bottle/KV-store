@@ -59,6 +59,7 @@ public:
 
 	void flush_to_disk(int hash_code)
 	{
+		buffer[hash_code].sort();
 		disk_manager.add_page(hash_code, buffer[hash_code]);
 	}
 

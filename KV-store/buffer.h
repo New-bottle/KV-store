@@ -14,7 +14,7 @@ public:
 	{
 		p = new char[PAGE_SIZE];
 		memset(p, 0, PAGE_SIZE);
-		head = p + sizeof(int); // cnt at head
+		head = p + sizeof(int); // head[0] indicates the number of element in buffer (cnt)
 		tail = p + PAGE_SIZE;
 	}
 
@@ -38,12 +38,44 @@ public:
 		++(*cnt);
 		return true;
 	}
-	void clear() {
+	void clear() 
+	{
 		memset(p, 0, PAGE_SIZE);
-		head = p + sizeof(int);
+		head = p + sizeof(int); // head[0] indicates the number of element in buffer
 		tail = p + PAGE_SIZE;
 	}
 
-	//void sort();
+	void swap(int &a, int &b) 
+	{
+		int tmp = b;
+		b = a;
+		a = tmp;
+	}
+	void sort(int *l, int *r)
+	{
+		if (l >= r) return;
+		int *i = l, *j = r;
+		swap(l[0], l[(r - l) >> 2 << 1]); // set the mid as the key
+		swap(l[1], l[(r - l) >> 2 << 1 | 1]);
+		int key = l[0];
+		// [key, ptr, key, ptr, key, ptr, ..., key, ptr]
+		//   l                                          r
+		//                           r-l/2
+		//                     r-l/2/2*2
+		while (i < j) {
+			while (i < j && j > l && *j >= key) j -= 2;
+			while (i < j && i < r && *i <= key) i += 2;
+			swap(i[0], j[0]);
+			swap(i[1], j[1]);
+		}
+		swap(j[0], l[0]);
+		swap(j[1], l[1]);
+		sort(l, i - 2);
+		sort(i + 2, r);
+	}
+	void sort() 
+	{
+		sort((int*)p + 1, (int*)head - 2);
+	}
 };
 

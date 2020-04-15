@@ -228,6 +228,17 @@ void* DiskManager::search(int key)
 			for (int i = 0; i < BLOCK_PAGE_SIZE / PAGE_SIZE; ++i) {
 				int *cnt = (int*)data_block[i], *head = (int*)(data_block[i] + sizeof(int));
 				void *value = nullptr;
+				int l = 0, r = *cnt - 1, mid;
+				while (l <= r) {
+					mid = (l + r) >> 1;
+					if (head[mid << 1] == key) {
+						value = data_block[i] + head[mid << 1 | 1];
+						return value;
+					}
+					if (head[mid << 1] < key) l = mid + 1;
+					else r = mid - 1;
+				}
+				/*
 				for (int j = 0; j < *cnt; ++j) {
 					// head[j << 1]     -> key
 					// head[j << 1 | 1] -> pos of value
@@ -235,10 +246,10 @@ void* DiskManager::search(int key)
 						value = data_block[i] + head[j << 1 | 1];
 						return value;
 					}
-				}
+				}*/
 			}
 		}
-		if (filter.next == 0)
+		if (*filter.next == 0)
 			throw "Not Found!";
 		filter = load_next_filter(filter);
 	}
