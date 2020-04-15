@@ -250,7 +250,8 @@ void* DiskManager::search(int key)
 			}
 		}
 		if (*filter.next == 0)
-			throw "Not Found!";
+			return nullptr; // not found
+			//throw "Not Found!";
 		filter = load_next_filter(filter);
 	}
 }

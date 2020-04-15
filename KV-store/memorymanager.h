@@ -40,6 +40,7 @@ public:
 
 	bool add_item(int key, value_type value)
 	{
+	//	if (disk_manager.search(key) != null)
 		if (buffer == nullptr) {
 			init_buffer();
 		}
