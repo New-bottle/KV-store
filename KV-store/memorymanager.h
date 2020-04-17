@@ -40,7 +40,9 @@ public:
 
 	bool add_item(int key, value_type value)
 	{
-	//	if (disk_manager.search(key) != null)
+		if (disk_manager.search(key) != nullptr) { // already have this key
+			return false;
+		}
 		if (buffer == nullptr) {
 			init_buffer();
 		}
@@ -61,7 +63,8 @@ public:
 	void flush_to_disk(int hash_code)
 	{
 		buffer[hash_code].sort();
-		disk_manager.add_page(hash_code, buffer[hash_code]);
+		if (!buffer[hash_code].empty())
+			disk_manager.add_page(hash_code, buffer[hash_code]);
 	}
 
 	void flush_to_disk()

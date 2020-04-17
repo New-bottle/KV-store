@@ -19,19 +19,20 @@ node& File::load(int page_id)
 			//fseek(fp, page_id * page_size, 0); // TODO page_id * page_size > long?
 			fread(tmp, sizeof(char), page_size, fp);
 			// live[page_id] = node(tmp, page_size, 1, false);
-			live.insert(std::pair<int,node>(page_id, node(tmp, page_size, 1, false)));
+			it = live.insert(std::make_pair(page_id, node(tmp, page_size, 1, false))).first;
 		}
 		else {
 			it->second.count += 1;
 			live[it->first] = it->second;
 			//live.insert(std::pair<int,node>(it->first,it->second));
 			sleep.erase(it);
+			it = live.find(page_id);
 		}
 	}
 	else {
 		it->second.count += 1;
 	}
-	return live[page_id];
+	return it->second;
 }
 
 void File::release(int page_id)

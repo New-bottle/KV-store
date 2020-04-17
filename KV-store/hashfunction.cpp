@@ -112,14 +112,12 @@ int HashFunction::hash2(int key)
 }
 
 /*
- * remove the last two digits then use the remained last 2 digits
- * actually, the last 3-4th digits
- * 10034601 -> 46
- * 12345678 -> 56
+ * the 11~20 bit
+ * 11111111110000000000
  */
 int HashFunction::hash1(int key)
 {
-	return key / 100 % 100;
+	return (key & 0x0FFC00) >> 10; // bitwise
 }
 
 unsigned int HashFunction::hash_ap(const unsigned char* begin, std::size_t remaining_length, int hash_num)

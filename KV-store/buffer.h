@@ -77,5 +77,9 @@ public:
 	{
 		sort((int*)p + 1, (int*)head - 2);
 	}
+	bool empty()
+	{
+		return head == p + sizeof(int);
+	}
 };
 

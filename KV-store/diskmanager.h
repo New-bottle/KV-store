@@ -56,11 +56,12 @@ public:
 		DataBlock data(data_block.p);
 		char *head = data[*bf.page_cnt];
 		char *tail = data[*bf.page_cnt + 1];
-		// TODO 插入bloom filter
+		// 插入bloom filter
 		for (int *i = (int*)buffer.p + 1; i < (int*)buffer.head; i += 2) { // 一个int存key，一个int存value头
 			bf.insert(*i);
 		}
 		memcpy(data[*bf.page_cnt], buffer.p, PAGE_SIZE);
+//		for (int *)
 		++(*bf.page_cnt);
 		block->release(*bf.block);
 		bloom_filter->release(filter_head[hash_code]);
