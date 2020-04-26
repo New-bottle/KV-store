@@ -8,10 +8,10 @@ class MemoryManager
 {
 private:
 	Buffer<value_type> *buffer;
-	DiskManager& disk_manager;
+	DiskManager<value_type>& disk_manager;
 
 public:
-	MemoryManager(DiskManager& disk):disk_manager(disk)
+	MemoryManager(DiskManager<value_type>& disk):disk_manager(disk)
 	{
 		buffer = nullptr;
 	}
@@ -40,9 +40,8 @@ public:
 
 	bool add_item(int key, value_type value)
 	{
-		if (disk_manager.search(key) != nullptr) { // already have this key
+		if (disk_manager.search(key) != nullptr) 
 			return false;
-		}
 		if (buffer == nullptr) {
 			init_buffer();
 		}

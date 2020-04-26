@@ -1,82 +1,107 @@
 #include "pch.h"
 #include "file.h"
 
-node& File::load(int page_id)
+// start with page_id, length's pages
+node& File::load(int page_id, int length) 
 {
-	auto it = live.find(page_id);
-	if (it == live.end()) {
-		it = sleep.find(page_id);
-		if (it == sleep.end()) {
-			char *tmp = new char[page_size];
-			memset(tmp, 0, sizeof(page_size));
-			long long target = (long long)page_id * page_size, now = 0;
-			fseek(fp, 0, SEEK_SET);
-			while (target - now >= 2LL * 1024 * 1024 * 1024) {
-				fseek(fp, 2LL * 1024 * 1024 * 1024 - 1, 1);
-				now += 2LL * 1024 * 1024 * 1024 - 1;
-			}
-			fseek(fp, target - now, SEEK_CUR);
-			//fseek(fp, page_id * page_size, 0); // TODO page_id * page_size > long?
-			fread(tmp, sizeof(char), page_size, fp);
-			// live[page_id] = node(tmp, page_size, 1, false);
-			it = live.insert(std::make_pair(page_id, node(tmp, page_size, 1, false))).first;
+	auto it = live.upper_bound(page_id);
+	bool live_finded = true, sleep_finded = true;
+	if (it == live.begin()) { // not loaded
+		live_finded = false;
+	}
+	else {
+		--it;
+		if (it->first + it->second.length - 1 < page_id)
+			live_finded = false;
+	}
+
+	if (live_finded) {
+		if (it->first == page_id && it->second.length == length) {
+			it->second.count += 1;
+			return it->second;
 		}
 		else {
-			it->second.count += 1;
-			live[it->first] = it->second;
-			//live.insert(std::pair<int,node>(it->first,it->second));
-			sleep.erase(it);
-			it = live.find(page_id);
+			flush(it);
 		}
 	}
 	else {
-		it->second.count += 1;
+		it = sleep.upper_bound(page_id);
+		if (it == sleep.begin()) {
+			sleep_finded = false;
+		} else{
+			--it;
+			if (it->first + it->second.length - 1 < page_id)
+				sleep_finded = false;
+		}
+		if (sleep_finded) {
+			if (it->first == page_id && it->second.length == length) {
+				it->second.count += 1;
+				live[it->first] = it->second;
+				sleep.erase(it); // maybe emplace?
+				return live[page_id];
+			}
+			else {
+				flush(it);
+			}
+		}
 	}
+	char *tmp = new char[length * page_size];
+	memset(tmp, 0, length * page_size);
+	long long target = (long long)page_id * page_size, now = 0;
+	fseek(fp, 0, SEEK_SET);
+	while (target - now >= 2LL * 1024 * 1024 * 1024) {
+		fseek(fp, 2LL * 1024 * 1024 * 1024 - 1, 1);
+		now += 2LL * 1024 * 1024 * 1024 - 1;
+	}
+	fseek(fp, target - now, SEEK_CUR);
+	fread(tmp, sizeof(char), length * page_size, fp);
+	it = live.insert(std::make_pair(page_id, node(tmp, length, 1, false))).first;
 	return it->second;
 }
 
 void File::release(int page_id)
 {
-	if (live.find(page_id) == live.end()) {
+	auto it = live.find(page_id);
+	if (it == live.end()) {
 		printf("page %d not found!", page_id);
 		throw "page not found";
 	}
-	live[page_id].count -= 1;
-	if (live[page_id].count == 0) {
-		sleep[page_id] = live[page_id];
-		live.erase(page_id);
+	it->second.count -= 1;
+	if (it->second.count == 0) {
+		sleep[page_id] = it->second;
+		live.erase(it);
 	}
 }
 
-void File::flush(int page_id)
+void File::flush(std::map<int, node>::iterator iter)
 {
-	if (live.find(page_id) != live.end()) {
-		if (live[page_id].dirty_mark) {
-			long long target = (long long)page_id * page_size, now = 0;
-			fseek(fp, 0, SEEK_SET);
-			while (target - now >= 2LL * 1024 * 1024 * 1024) {
-				fseek(fp, 2LL * 1024 * 1024 * 1024 - 1, 1);
-				now += 2LL * 1024 * 1024 * 1024 - 1;
-			}
-			fseek(fp, target - now, SEEK_CUR);
-			fwrite(live[page_id].p, sizeof(char), page_size, fp);
+	if (iter->second.dirty_mark) {
+		long long target = (long long)iter->first * page_size, now = 0;
+		fseek(fp, 0, SEEK_SET);
+		while (target - now >= 2LL * 1024 * 1024 * 1024) {
+			fseek(fp, 2LL * 1024 * 1024 * 1024 - 1, SEEK_CUR);
+			now += 2LL * 1024 * 1024 * 1024 - 1;
 		}
-		delete[] live[page_id].p;
-		live.erase(page_id);
+		fseek(fp, target - now, SEEK_CUR);
+		fwrite(iter->second.p, sizeof(char), iter->second.length*page_size, fp);
 	}
-	else if (sleep.find(page_id) != sleep.end()) {
-		if (sleep[page_id].dirty_mark) {
-			long long target = (long long)page_id * page_size, now = 0;
-			fseek(fp, 0, SEEK_SET);
-			while (target - now >= 2LL * 1024 * 1024 * 1024) {
-				fseek(fp, 2LL * 1024 * 1024 * 1024 - 1, 1);
-				now += 2LL * 1024 * 1024 * 1024 - 1;
-			}
-			fseek(fp, target - now, SEEK_CUR);
-			fwrite(sleep[page_id].p, sizeof(char), page_size, fp);
+	delete[] iter->second.p;
+	// erase (iter);
+}
+
+void File::flush(int page_id)
+{ // TODO ? maybe need to be modified
+	auto it = live.find(page_id);
+	if (it != live.end()) {
+		flush(it);
+		live.erase(it);
+	}
+	else {
+		it = sleep.find(page_id);
+		if (it != sleep.end()) {
+			flush(it);
+			sleep.erase(it);
 		}
-		delete[] sleep[page_id].p;
-		sleep.erase(page_id);
 	}
 }
 
@@ -86,31 +111,11 @@ bool File::flush()
 	printf("flushing all cache\n");
 #endif
 	for (auto i = live.begin(); i != live.end(); ++i) {
-		if (i->second.dirty_mark) {
-			long long target = (long long)i->first * page_size, now = 0;
-			fseek(fp, 0, 0);
-			while (target - now >= 2LL * 1024 * 1024 * 1024) {
-				fseek(fp, 2LL * 1024 * 1024 * 1024 - 1, 1);
-				now += 2LL * 1024 * 1024 * 1024 - 1;
-			}
-			fseek(fp, target - now, 1);
-			fwrite(i->second.p, sizeof(char), page_size, fp);
-		}
-		delete[] i->second.p;
+		flush(i);
 	}
 	live.clear();
 	for (auto i = sleep.begin(); i != sleep.end(); ++i) {
-		if (i->second.dirty_mark) {
-			long long target = (long long)i->first * page_size, now = 0;
-			fseek(fp, 0, 0);
-			while (target - now >= 2LL * 1024 * 1024 * 1024) {
-				fseek(fp, 2LL * 1024 * 1024 * 1024 - 1, 1);
-				now += 2LL * 1024 * 1024 * 1024 - 1;
-			}
-			fseek(fp, target - now, 1);
-			fwrite(i->second.p, sizeof(char), page_size, fp);
-		}
-		delete[] i->second.p;
+		flush(i);
 	}
 	sleep.clear();
 	return true;

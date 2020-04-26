@@ -2,12 +2,8 @@
 
 #define DEBUG
 
-#ifndef BLOCK_SIZE
-#define BLOCK_SIZE (512 * 1024)
-#endif
-
 #ifndef PAGE_SIZE
-#define PAGE_SIZE (512 * 1024) // 8 * 1024
+#define PAGE_SIZE (16 * 1024) // 8 * 1024
 //#define PAGE_SIZE 512
 #endif
 
@@ -32,10 +28,19 @@
 #define FILTER_FILE_NAME "filter.dat"
 #endif
 
+#ifndef BLOCK_SIZE
+#define BLOCK_SIZE (512 * 1024)
+#endif
+
 #ifndef BLOCK_PAGE_SIZE
 //#define BLOCK_PAGE_SIZE (512 * 1024)
-#define BLOCK_PAGE_SIZE (512 * 1024)
+#define BLOCK_PAGE_SIZE (16 * 1024)
 #endif
+
+#ifndef BLOCK_PAGE_NUM
+#define BLOCK_PAGE_NUM (BLOCK_SIZE / BLOCK_PAGE_SIZE)
+#endif
+// warning: there should be BLOCK_PAGE_SIZE > BLOCK_PAGE_NUM * 2 * sizeof(int)
 
 #ifndef FILTER_PAGE_SIZE
 #define FILTER_PAGE_SIZE (32 * 1024)

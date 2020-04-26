@@ -324,10 +324,8 @@
     <ClCompile Include="datablock.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="diskmanager.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Test|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="file.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">NotUsing</PrecompiledHeader>

@@ -23,8 +23,9 @@ class File
 
 public:
 	File(FILE *fp, int page_size);
-	node& load(int page_id);
+	node& load(int page_id, int length = 1);
 	void release(int page_id);
+	void flush(std::map<int, node>::iterator iter);
 	void flush(int page_id);
 	bool flush();
 	~File();
