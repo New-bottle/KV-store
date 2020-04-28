@@ -68,13 +68,13 @@ public:
 	}
 	void split(DataPage &rhs)
 	{ // put half to rhs
-		char *tmp = new char[PAGE_SIZE];
-		memcpy(tmp, p, PAGE_SIZE);
+//		char *tmp = new char[BLOCK_PAGE_SIZE];
+		char tmp[BLOCK_PAGE_SIZE];
+		memcpy(tmp, p, BLOCK_PAGE_SIZE);
 		this->clear();
-		rhs.clear();
+		//rhs.clear();
 		int *head = (int*)tmp;
 		KPPair *ptr = (KPPair*)(tmp + 2 * sizeof(int));
-		int cnt = 0;
 		value_type *ans;
 		for (int i = (*head) / 4 * 3; i < *head; ++i) { // 1/4 goto new page
 			ans = (value_type*)(tmp + ptr[i].ptr);
@@ -84,14 +84,14 @@ public:
 			ans = (value_type*)(tmp + ptr[i].ptr);
 			this->insert(ptr[i].key, *ans);
 		}
-		delete[] tmp;
+//		delete tmp;
 	}
 	void clear()
 	{
-		memset(p, 0, PAGE_SIZE); // maybe time consuming
+		memset(p, 0, BLOCK_PAGE_SIZE); // maybe time consuming
 		int *head = (int *)p;
 		head[0] = 0;
-		head[1] = PAGE_SIZE;
+		head[1] = BLOCK_PAGE_SIZE;
 	}
 	int min_key()
 	{
@@ -122,15 +122,19 @@ public:
 			if (ptr[mid].key < key) pos = mid, l = mid + 1;
 			else r = mid - 1;
 		}
+		if (ptr[pos].ptr > BLOCK_PAGE_NUM - 2) {
+			pos = pos;
+		}
 		node &blk = block->load(header + 1 + ptr[pos].ptr);
 		DataPage<value_type> page(blk.p);
 		if (!page.insert(key, value)) {
 			int &cnt = *(int*)(head.p);
-			if (cnt == BLOCK_PAGE_NUM - 1) return false; // block is full, can't split
+			if (cnt == BLOCK_PAGE_NUM - 1) 
+				return false; // block is full, can't split
 			for (int i = cnt - 1; i > pos; ++i)
 				ptr[i + 1] = ptr[i];
 			++cnt;
-			node &blk2 = block->load(header + 1 + cnt);
+			node &blk2 = block->load(header + cnt);
 			DataPage<value_type> page2(blk2.p);
 			page.split(page2);
 			if (key < page2.min_key()) 
@@ -138,9 +142,9 @@ public:
 			else 
 				page2.insert(key, value);
 			ptr[pos].key = page.min_key();
-			ptr[pos + 1].ptr = cnt;
+			ptr[pos + 1].ptr = cnt - 1; // ?
 			ptr[pos + 1].key = page2.min_key();
-			block->release(header + 1 + cnt);
+			block->release(header + cnt);
 		}
 		else {
 			ptr[pos].key = page.min_key();
@@ -170,14 +174,15 @@ public:
 	{
 		node &head = block->load(header);
 		head.dirty_mark = true;
-		//memset(head.p, 0, sizeof(BLOCK_SIZE));
+		memset(head.p, 0, sizeof(BLOCK_SIZE));
 		int *ptr = (int*)head.p;
 		ptr[0] = 1; // data page [0, ptr[0] - 1]
-		for (int i = 1; i <= 2 * BLOCK_PAGE_NUM; ++i)
+		/*
+		for (int i = 1; i <= 2 * (BLOCK_PAGE_NUM - 1); ++i)
 		{
 			ptr[i] = 0; // key
 	//		ptr[i + BLOCK_PAGE_NUM] = 0; // ptr
-		}
+		}*/
 		for (int i = 1; i < BLOCK_PAGE_NUM; ++i) {
 			node &first = block->load(header + i);
 			DataPage<value_type> dp(first.p);

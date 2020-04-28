@@ -4,6 +4,7 @@
 #include "diskmanager.h"
 #include "memorymanager.h"
 
+/*
 BOOST_AUTO_TEST_CASE(myTestCase)
 {
   BOOST_TEST((int)(1.6) == 1);
@@ -156,7 +157,7 @@ BOOST_AUTO_TEST_CASE(read_write_200000_long_long_data)
 	printf("filter_cnt: %d   block_cnt: %d\n", disk.filter_cnt, disk.block_cnt);
 #endif
 }
-
+*/
 
 BOOST_AUTO_TEST_CASE(write_10000000_long_long_data)
 {
@@ -165,6 +166,12 @@ BOOST_AUTO_TEST_CASE(write_10000000_long_long_data)
 	mem.init_buffer();
 	int cnt = 0;
 	for (long long i = 0; i <= 10000000; ++i) {
+		if (i == 1051646) {
+			i = 1051646;
+		}
+		if (i == 1057790) {
+			i = 1057790;
+		}
 		if (mem.add_item(i, i * i + 2 * i - 1))
 			++cnt;
 	}

@@ -110,13 +110,15 @@ bool File::flush()
 #ifdef DEBUG
 	printf("flushing all cache\n");
 #endif
-	for (auto i = live.begin(); i != live.end(); ++i) {
-		flush(i);
-	}
+	if (!live.empty())
+		for (auto i = live.begin(); i != live.end(); ++i) {
+			flush(i);
+		}
 	live.clear();
-	for (auto i = sleep.begin(); i != sleep.end(); ++i) {
-		flush(i);
-	}
+	if (!sleep.empty())
+		for (auto i = sleep.begin(); i != sleep.end(); ++i) {
+			flush(i);
+		}
 	sleep.clear();
 	return true;
 }

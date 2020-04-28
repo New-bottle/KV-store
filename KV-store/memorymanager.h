@@ -8,12 +8,13 @@ class MemoryManager
 {
 private:
 	Buffer<value_type> *buffer;
-	DiskManager<value_type>& disk_manager;
+	DiskManager<value_type>* disk_manager;
 
 public:
-	MemoryManager(DiskManager<value_type>& disk):disk_manager(disk)
+	MemoryManager(DiskManager<value_type>& disk)
 	{
 		buffer = nullptr;
+		disk_manager = &disk;
 	}
 
 	~MemoryManager()
@@ -40,7 +41,7 @@ public:
 
 	bool add_item(int key, value_type value)
 	{
-		if (disk_manager.search(key) != nullptr) 
+		if (disk_manager->search(key) != nullptr) 
 			return false;
 		if (buffer == nullptr) {
 			init_buffer();
@@ -63,7 +64,7 @@ public:
 	{
 		buffer[hash_code].sort();
 		if (!buffer[hash_code].empty())
-			disk_manager.add_page(hash_code, buffer[hash_code]);
+			disk_manager->add_page(hash_code, buffer[hash_code]);
 	}
 
 	void flush_to_disk()

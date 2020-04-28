@@ -33,8 +33,7 @@
 #endif
 
 #ifndef BLOCK_PAGE_SIZE
-//#define BLOCK_PAGE_SIZE (512 * 1024)
-#define BLOCK_PAGE_SIZE (16 * 1024)
+#define BLOCK_PAGE_SIZE (8 * 1024)
 #endif
 
 #ifndef BLOCK_PAGE_NUM
